@@ -1,5 +1,6 @@
 import './App.css';
 import Table from 'react-bootstrap/Table';
+import EventRow from "./components/EventRow";
 
 function App() {
   return (
@@ -13,6 +14,12 @@ function App() {
                 <th>Location</th>
             </tr>
         </thead>
+          <EventRow
+              flagged={"false"}
+              date={"today"}
+              time={"now"}
+              location={"thermostat"}
+          />
       </Table>
     </div>
   );
