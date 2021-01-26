@@ -20,7 +20,7 @@ function EventTable(props) {
                     props.events.map(event => {
                         return (
                             <EventRow
-                                flagged={event.flag ? "true" : "false"}
+                                flagged={event.flag}
                                 location={event.loc}
                                 date={getDateStringFromTimestamp(event.stamp)}
                                 time={getTimeStringFromTimestamp(event.stamp)}
