@@ -1,6 +1,7 @@
 import Table from 'react-bootstrap/Table';
 import EventRow from "./EventRow";
 import React from "react";
+import { DateTime } from "luxon";
 
 function EventTable(props) {
     return (
@@ -21,8 +22,8 @@ function EventTable(props) {
                             <EventRow
                                 flagged={event.flag ? "true" : "false"}
                                 location={event.loc}
-                                date={event.stamp}
-                                time={event.stamp}
+                                date={getDateStringFromTimestamp(event.stamp)}
+                                time={getTimeStringFromTimestamp(event.stamp)}
                                 key={event.id}
                             />
                         );
@@ -32,6 +33,14 @@ function EventTable(props) {
             </Table>
         </div>
     );
+}
+
+function getDateStringFromTimestamp(stamp) {
+    return DateTime.fromISO(stamp).toLocaleString(DateTime.DATE_MED_WITH_WEEKDAY);
+}
+
+function getTimeStringFromTimestamp(stamp) {
+    return DateTime.fromISO(stamp).toLocaleString(DateTime.TIME_WITH_SECONDS);
 }
 
 export default EventTable;
