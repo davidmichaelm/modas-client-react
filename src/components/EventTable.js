@@ -4,7 +4,7 @@ import React from "react";
 
 function EventTable(props) {
     return (
-        <div className="App">
+        <div className="container-fluid overflow-auto w-100" id="event-table">
             <Table>
                 <thead>
                 <tr>

@@ -1,19 +1,22 @@
 import './App.css';
 import EventTable from "./components/EventTable";
+import PageControls from "./components/PageControls";
 import React from "react";
 
 class App extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            events: []
+            events: [],
+            pagingInfo: {}
         };
     }
 
     render() {
         return (
             <div className="App">
-                <EventTable events={this.state.events}/>
+                <EventTable events={this.state.events} />
+                <PageControls pagingInfo={this.state.pagingInfo} />
             </div>
         );
     }
@@ -34,7 +37,8 @@ class App extends React.Component {
             .then(data => {
                 console.log(data);
                 this.setState({
-                    events: data.events
+                    events: data.events,
+                    pagingInfo: data.pagingInfo
                 });
             })
             .catch(error => console.log(error));
