@@ -2,18 +2,47 @@ import Button from "react-bootstrap/Button";
 
 function PageControls(props) {
     const pagingInfo = props.pagingInfo;
+
+    function handleClick(e) {
+        props.onPageChange(e.target.value);
+    }
+
     return (
         <div className="d-flex p-2 flex-row align-items-center bg-dark text-light" id="page-controls">
             <div className="mr-auto">
-                <Button className="m-1">First</Button>
-                <Button className="m-1">Prev</Button>
+                <Button
+                    className="m-1"
+                    onClick={handleClick}
+                    value={1}
+                >
+                    First
+                </Button>
+                <Button
+                    className="m-1"
+                    onClick={handleClick}
+                    value={pagingInfo.previousPage}
+                >
+                    Prev
+                </Button>
             </div>
             <div>
                 {pagingInfo.rangeStart}-{pagingInfo.rangeEnd} of {pagingInfo.totalItems}
             </div>
             <div className="ml-auto">
-                <Button className="m-1">Next</Button>
-                <Button className="m-1">Last</Button>
+                <Button
+                    className="m-1"
+                    onClick={handleClick}
+                    value={pagingInfo.nextPage}
+                >
+                    Next
+                </Button>
+                <Button
+                    className="m-1"
+                    onClick={handleClick}
+                    value={pagingInfo.totalPages}
+                >
+                    Last
+                </Button>
             </div>
         </div>
     );

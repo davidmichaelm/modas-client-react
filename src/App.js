@@ -6,9 +6,11 @@ import React from "react";
 class App extends React.Component {
     constructor(props) {
         super(props);
+        this.setPageData = this.setPageData.bind(this);
         this.state = {
             events: [],
-            pagingInfo: {}
+            pagingInfo: {},
+            itemsPerPage: 20
         };
     }
 
@@ -16,7 +18,10 @@ class App extends React.Component {
         return (
             <div className="App">
                 <EventTable events={this.state.events} />
-                <PageControls pagingInfo={this.state.pagingInfo} />
+                <PageControls
+                    pagingInfo={this.state.pagingInfo}
+                    onPageChange={this.setPageData}
+                />
             </div>
         );
     }
@@ -32,8 +37,12 @@ class App extends React.Component {
         })
     }
 
-    componentDidMount() {
-        this.fetchEvents(20, 1)
+    setPageData(page) {
+        if (parseInt(page) === this.state.pagingInfo.currentPage
+            && this.state.itemsPerPage === this.state.pagingInfo.itemsPerPage)
+            return;
+
+        this.fetchEvents(this.state.itemsPerPage, page)
             .then(data => {
                 console.log(data);
                 this.setState({
@@ -42,6 +51,10 @@ class App extends React.Component {
                 });
             })
             .catch(error => console.log(error));
+    }
+
+    componentDidMount() {
+        this.setPageData(1);
     }
 }
 
