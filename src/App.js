@@ -19,15 +19,26 @@ class App extends React.Component {
     }
 
     componentDidMount() {
-        fetch("https://dmarquardt-modas.azurewebsites.net/api/event/pageSize/10/page/1")
-            .then(r => r.json())
+        fetchEvents(20, 1)
             .then(data => {
                 console.log(data);
                 this.setState({
                     events: data.events
                 });
-            });
+            })
+            .catch(error => console.log(error));
     }
+}
+
+function fetchEvents(numEvents, page) {
+    return new Promise((resolve, reject) => {
+        fetch(`https://dmarquardt-modas.azurewebsites.net/api/event/pageSize/${numEvents}/page/${page}`)
+            .then(r => r.json())
+            .then(data => {
+                resolve(data);
+            })
+            .catch(error => reject(error));
+    })
 }
 
 export default App;
