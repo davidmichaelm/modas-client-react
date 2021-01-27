@@ -1,7 +1,9 @@
 import './App.css';
+import "bootstrap-icons/font/bootstrap-icons.css";
 import EventTable from "./components/EventTable";
 import PageControls from "./components/PageControls";
 import React from "react";
+import PageHeader from "./components/PageHeader";
 
 class App extends React.Component {
     constructor(props) {
@@ -18,11 +20,7 @@ class App extends React.Component {
     render() {
         return (
             <div className="App text-white">
-                <header>
-                    <h2 className="p-2 mb-0">
-                        Modas
-                    </h2>
-                </header>
+                <PageHeader />
                 <EventTable events={this.state.events} />
                 <PageControls
                     pagingInfo={this.state.pagingInfo}

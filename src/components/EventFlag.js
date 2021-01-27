@@ -1,4 +1,3 @@
-import "bootstrap-icons/font/bootstrap-icons.css";
 
 function EventFlag(props) {
     if (props.flagged) {
