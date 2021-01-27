@@ -1,4 +1,5 @@
 import Pagination from "react-bootstrap/Pagination";
+import Form from "react-bootstrap/Form";
 
 function PageControls(props) {
     const pagingInfo = props.pagingInfo;
@@ -9,9 +10,14 @@ function PageControls(props) {
         props.onPageChange(page);
     }
 
+    function handleChange(e) {
+        console.log(e.target.value)
+        props.onItemsPerPageChange(e.target.value);
+    }
+
     return (
-        <div className="d-flex p-2 flex-row align-items-center bg-dark text-light" id="page-controls">
-            <Pagination className="mx-auto align-self-center">
+        <div className="p-2 bg-dark text-light align-items-center" id="page-controls">
+            <Pagination className="my-auto" id="pagination">
                 <Pagination.First
                     onClick={() => handleClick(1)}
                     disabled={onFirstPage}
@@ -50,6 +56,23 @@ function PageControls(props) {
                     disabled={onLastPage}
                 />
             </Pagination>
+
+            <div className="ml-auto">
+                <span className="pr-2 d-none d-md-inline">Items:</span>
+                <Form.Control
+                    as="select"
+                    className="w-auto"
+                    size="sm"
+                    custom
+                    defaultValue={20}
+                    onChange={handleChange}
+                >
+                    <option value="10">10/page</option>
+                    <option value="20">20/page</option>
+                    <option value="30">30/page</option>
+                    <option value="40">40/page</option>
+                </Form.Control>
+            </div>
         </div>
     );
 }

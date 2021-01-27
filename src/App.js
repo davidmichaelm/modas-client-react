@@ -7,6 +7,7 @@ class App extends React.Component {
     constructor(props) {
         super(props);
         this.setPageData = this.setPageData.bind(this);
+        this.handleItemsPerPageChange = this.handleItemsPerPageChange.bind(this);
         this.state = {
             events: [],
             pagingInfo: {},
@@ -21,6 +22,7 @@ class App extends React.Component {
                 <PageControls
                     pagingInfo={this.state.pagingInfo}
                     onPageChange={this.setPageData}
+                    onItemsPerPageChange={this.handleItemsPerPageChange}
                 />
             </div>
         );
@@ -44,13 +46,18 @@ class App extends React.Component {
 
         this.fetchEvents(this.state.itemsPerPage, page)
             .then(data => {
-                console.log(data);
                 this.setState({
                     events: data.events,
                     pagingInfo: data.pagingInfo
                 });
             })
             .catch(error => console.log(error));
+    }
+
+    handleItemsPerPageChange(itemsNum) {
+        this.setState({
+            itemsPerPage: itemsNum
+        }, () => this.setPageData(1));
     }
 
     componentDidMount() {

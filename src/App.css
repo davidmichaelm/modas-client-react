@@ -2,6 +2,7 @@ html, body, #root {
     height: 100%;
     margin: 0;
     overflow-x: hidden;
+    background: #343a40;
 }
 
 .App {
@@ -12,7 +13,16 @@ html, body, #root {
 
 #page-controls {
     width: 100%;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    grid-column-gap: 5px;
+    justify-items: center;
 }
+
+#page-controls #pagination {
+    grid-column-start: 2;
+}
+
 
 #event-table {
     flex: 1;
