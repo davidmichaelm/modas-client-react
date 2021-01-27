@@ -17,7 +17,12 @@ class App extends React.Component {
 
     render() {
         return (
-            <div className="App">
+            <div className="App text-white">
+                <header>
+                    <h2 className="p-2 mb-0">
+                        Modas
+                    </h2>
+                </header>
                 <EventTable events={this.state.events} />
                 <PageControls
                     pagingInfo={this.state.pagingInfo}
