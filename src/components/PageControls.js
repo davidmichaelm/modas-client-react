@@ -28,6 +28,10 @@ function PageControls(props) {
                     disabled={onFirstPage}
                 />
 
+                {pagingInfo.previousPage !== 1 &&
+                    <Pagination.Ellipsis disabled />
+                }
+
                 {!onFirstPage &&
                     <Pagination.Item
                         onClick={() => handleClick(pagingInfo.previousPage)}
@@ -44,6 +48,10 @@ function PageControls(props) {
                     >
                         {pagingInfo.nextPage}
                     </Pagination.Item>
+                }
+
+                {pagingInfo.nextPage !== pagingInfo.totalPages &&
+                    <Pagination.Ellipsis disabled />
                 }
 
                 <Pagination.Next
