@@ -4,9 +4,9 @@ import React from "react";
 
 function EventTable(props) {
     return (
-        <div className="container-fluid overflow-auto w-100" id="event-table">
-            <Table>
-                <thead>
+        <div className="overflow-auto w-100" id="event-table">
+            <Table striped variant="dark">
+                <thead className="bg-primary sticky-top">
                 <tr>
                     <th>Flag</th>
                     <th>Date</th>
