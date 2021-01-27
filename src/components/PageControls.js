@@ -1,49 +1,64 @@
-import Button from "react-bootstrap/Button";
+import Pagination from "react-bootstrap/Pagination";
 
 function PageControls(props) {
     const pagingInfo = props.pagingInfo;
+    const onFirstPage = pagingInfo.previousPage === pagingInfo.currentPage;
+    const onLastPage = pagingInfo.currentPage === pagingInfo.totalPages;
 
     function handleClick(e) {
-        props.onPageChange(e.target.value);
+        const page = e.target.getAttribute("data-page");
+        if (!page) return;
+
+        props.onPageChange(page);
     }
 
     return (
         <div className="d-flex p-2 flex-row align-items-center bg-dark text-light" id="page-controls">
-            <div className="mr-auto">
-                <Button
-                    className="m-1"
+            <Pagination className="mx-auto">
+                <Pagination.First
                     onClick={handleClick}
-                    value={1}
-                >
-                    First
-                </Button>
-                <Button
-                    className="m-1"
+                    data-page={1}
+                    disabled={onFirstPage}
+                />
+
+                <Pagination.Prev
                     onClick={handleClick}
-                    value={pagingInfo.previousPage}
-                >
-                    Prev
-                </Button>
-            </div>
-            <div>
-                {pagingInfo.rangeStart}-{pagingInfo.rangeEnd} of {pagingInfo.totalItems}
-            </div>
-            <div className="ml-auto">
-                <Button
-                    className="m-1"
+                    data-page={pagingInfo.previousPage}
+                    disabled={onFirstPage}
+                />
+
+                {!onFirstPage &&
+                    <Pagination.Item
+                        onClick={handleClick}
+                        data-page={pagingInfo.previousPage}
+                    >
+                        {pagingInfo.previousPage}
+                    </Pagination.Item>
+                }
+
+                <Pagination.Item active>{pagingInfo.currentPage}</Pagination.Item>
+
+                {!onLastPage &&
+                    <Pagination.Item
+                        onClick={handleClick}
+                        data-page={pagingInfo.nextPage}
+                    >
+                        {pagingInfo.nextPage}
+                    </Pagination.Item>
+                }
+
+                <Pagination.Next
                     onClick={handleClick}
-                    value={pagingInfo.nextPage}
-                >
-                    Next
-                </Button>
-                <Button
-                    className="m-1"
+                    data-page={pagingInfo.nextPage}
+                    disabled={onLastPage}
+                />
+
+                <Pagination.Last
                     onClick={handleClick}
-                    value={pagingInfo.totalPages}
-                >
-                    Last
-                </Button>
-            </div>
+                    data-page={pagingInfo.totalPages}
+                    disabled={onLastPage}
+                />
+            </Pagination>
         </div>
     );
 }
