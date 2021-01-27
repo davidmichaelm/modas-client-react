@@ -5,32 +5,26 @@ function PageControls(props) {
     const onFirstPage = pagingInfo.previousPage === pagingInfo.currentPage;
     const onLastPage = pagingInfo.currentPage === pagingInfo.totalPages;
 
-    function handleClick(e) {
-        const page = e.target.getAttribute("data-page");
-        if (!page) return;
-
+    function handleClick(page) {
         props.onPageChange(page);
     }
 
     return (
         <div className="d-flex p-2 flex-row align-items-center bg-dark text-light" id="page-controls">
-            <Pagination className="mx-auto">
+            <Pagination className="mx-auto align-self-center">
                 <Pagination.First
-                    onClick={handleClick}
-                    data-page={1}
+                    onClick={() => handleClick(1)}
                     disabled={onFirstPage}
                 />
 
                 <Pagination.Prev
-                    onClick={handleClick}
-                    data-page={pagingInfo.previousPage}
+                    onClick={() => handleClick(pagingInfo.previousPage)}
                     disabled={onFirstPage}
                 />
 
                 {!onFirstPage &&
                     <Pagination.Item
-                        onClick={handleClick}
-                        data-page={pagingInfo.previousPage}
+                        onClick={() => handleClick(pagingInfo.previousPage)}
                     >
                         {pagingInfo.previousPage}
                     </Pagination.Item>
@@ -40,22 +34,19 @@ function PageControls(props) {
 
                 {!onLastPage &&
                     <Pagination.Item
-                        onClick={handleClick}
-                        data-page={pagingInfo.nextPage}
+                        onClick={() => handleClick(pagingInfo.nextPage)}
                     >
                         {pagingInfo.nextPage}
                     </Pagination.Item>
                 }
 
                 <Pagination.Next
-                    onClick={handleClick}
-                    data-page={pagingInfo.nextPage}
+                    onClick={() => handleClick(pagingInfo.nextPage)}
                     disabled={onLastPage}
                 />
 
                 <Pagination.Last
-                    onClick={handleClick}
-                    data-page={pagingInfo.totalPages}
+                    onClick={() => handleClick(pagingInfo.totalPages)}
                     disabled={onLastPage}
                 />
             </Pagination>
