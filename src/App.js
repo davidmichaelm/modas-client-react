@@ -20,12 +20,11 @@ class App extends React.Component {
     render() {
         return (
             <div className="App text-white">
-                <PageHeader />
+                <PageHeader onItemsPerPageChange={this.handleItemsPerPageChange} />
                 <EventTable events={this.state.events} />
                 <PageControls
                     pagingInfo={this.state.pagingInfo}
                     onPageChange={this.setPageData}
-                    onItemsPerPageChange={this.handleItemsPerPageChange}
                 />
             </div>
         );
