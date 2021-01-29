@@ -9,11 +9,6 @@ function PageControls(props) {
         props.onPageChange(page);
     }
 
-    function handleChange(e) {
-        console.log(e.target.value)
-        props.onItemsPerPageChange(e.target.value);
-    }
-
     return (
         <div className="p-2 bg-dark text-light align-items-center" id="page-controls">
             <Pagination className="my-auto" id="pagination">
