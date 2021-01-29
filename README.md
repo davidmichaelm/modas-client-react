@@ -1,4 +1,8 @@
-# Getting Started with Create React App
+# modas-client-react
+
+Client side app for the Modas REST API. Running live [on Azure](https://happy-hill-0aec9cb10.azurestaticapps.net).
+
+## Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
