@@ -1,6 +1,8 @@
 import Pagination from "react-bootstrap/Pagination";
 
 function PageControls(props) {
+    if (!props.pagingInfo.currentPage) return null;
+
     const pagingInfo = props.pagingInfo;
     const onFirstPage = pagingInfo.previousPage === pagingInfo.currentPage;
     const onLastPage = pagingInfo.currentPage === pagingInfo.totalPages;
