@@ -10,6 +10,7 @@ class App extends React.Component {
         super(props);
         this.setPageData = this.setPageData.bind(this);
         this.handleItemsPerPageChange = this.handleItemsPerPageChange.bind(this);
+        this.handleFlagChange = this.handleFlagChange.bind(this);
         this.state = {
             events: [],
             pagingInfo: {},
@@ -20,8 +21,8 @@ class App extends React.Component {
     render() {
         return (
             <div className="App text-white">
-                <PageHeader onItemsPerPageChange={this.handleItemsPerPageChange} />
-                <EventTable events={this.state.events} />
+                <PageHeader onItemsPerPageChange={this.handleItemsPerPageChange}/>
+                <EventTable events={this.state.events} onFlagChange={this.handleFlagChange}/>
                 <PageControls
                     pagingInfo={this.state.pagingInfo}
                     onPageChange={this.setPageData}
@@ -60,6 +61,34 @@ class App extends React.Component {
         this.setState({
             itemsPerPage: itemsNum
         }, () => this.setPageData(1));
+    }
+
+    handleFlagChange(flagged, id) {
+        this.updateEventFlag(flagged, id);
+        const url = `https://dmarquardt-modas.azurewebsites.net/api/event/${id}`;
+        fetch(url,
+            {
+                method: "PATCH",
+                headers: {
+                    'content-type': 'application/json'
+                },
+                mode: "cors",
+                body: JSON.stringify([{
+                    "op": "replace",
+                    "path": "Flagged",
+                    "value": flagged
+                }])
+            })
+            .catch(e => console.log(e));
+    }
+
+    updateEventFlag(flagged, id) {
+        const newEvents = [...this.state.events];
+        const eventIndex = newEvents.findIndex(e => e.id === id);
+        newEvents[eventIndex].flag = flagged;
+        this.setState({
+            events: newEvents
+        })
     }
 
     componentDidMount() {

@@ -3,6 +3,10 @@ import EventRow from "./EventRow";
 import React from "react";
 
 function EventTable(props) {
+    function handleFlagChange(flagged, id) {
+        props.onFlagChange(flagged, id);
+    }
+
     return (
         <div className="overflow-auto w-100" id="event-table">
             <Table striped variant="dark">
@@ -19,10 +23,12 @@ function EventTable(props) {
                     props.events.map(event => {
                         return (
                             <EventRow
+                                id={event.id}
                                 flagged={event.flag}
                                 location={event.loc}
                                 stamp={event.stamp}
                                 key={event.id}
+                                onFlagChange={handleFlagChange}
                             />
                         );
                     })
