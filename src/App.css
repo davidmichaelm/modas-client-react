@@ -32,3 +32,23 @@ html, body, #root {
 #event-table table {
     border: 1px solid #454d55;
 }
+
+#alert-box {
+    position:fixed;
+    top:60px;
+    right:20px;
+    min-height:200px;
+    z-index: 10000;
+}
+
+#toast-container {
+    position:absolute;
+    top:0;
+    right:0;
+}
+
+@media (min-width: 1800px) {
+    #alert-box {
+        top: 20px;
+    }
+}
