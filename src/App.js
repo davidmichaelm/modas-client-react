@@ -4,6 +4,7 @@ import EventTable from "./components/EventTable";
 import PageControls from "./components/PageControls";
 import React from "react";
 import PageHeader from "./components/PageHeader";
+import Toasts from "./components/Toasts";
 
 class App extends React.Component {
     constructor(props) {
@@ -14,7 +15,8 @@ class App extends React.Component {
         this.state = {
             events: [],
             pagingInfo: {},
-            itemsPerPage: 20
+            itemsPerPage: 20,
+            toasts: []
         };
     }
 
@@ -22,11 +24,12 @@ class App extends React.Component {
         return (
             <div className="App text-white">
                 <PageHeader onItemsPerPageChange={this.handleItemsPerPageChange}/>
-                <EventTable events={this.state.events} onFlagChange={this.handleFlagChange}/>
+                <EventTable events={this.state.events} onFlagChange={this.handleFlagChange}><Toasts toasts={this.state.toasts}/></EventTable>
                 <PageControls
                     pagingInfo={this.state.pagingInfo}
                     onPageChange={this.setPageData}
                 />
+
             </div>
         );
     }
@@ -79,6 +82,7 @@ class App extends React.Component {
                     "value": flagged
                 }])
             })
+            .then(() => this.addToast("Update Complete", `Event flag ${flagged ? "added" : "removed"}.`))
             .catch(e => console.log(e));
     }
 
@@ -89,6 +93,28 @@ class App extends React.Component {
         this.setState({
             events: newEvents
         })
+    }
+
+    addToast(header, text) {
+        const newToasts = [...this.state.toasts];
+        const id = newToasts.length;
+        newToasts.push({
+            id: id,
+            header: header,
+            text: text
+        });
+        this.setState({
+            toasts: newToasts
+        });
+        setTimeout(this.removeToast.bind(this, id), 2000);
+    }
+
+    removeToast(id) {
+        const newToasts = [...this.state.toasts];
+        newToasts.splice(id);
+        this.setState({
+            toasts: newToasts
+        });
     }
 
     componentDidMount() {

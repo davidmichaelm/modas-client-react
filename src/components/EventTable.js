@@ -9,7 +9,7 @@ function EventTable(props) {
     }
 
     return (
-        <div className="overflow-auto container-xl p-0" id="event-table">
+        <div className="overflow-auto container-xl p-0 position-relative" id="event-table">
             <Table striped variant="dark" className="w-lg-50">
                 <thead className="bg-primary sticky-top">
                 <tr>
@@ -43,6 +43,7 @@ function EventTable(props) {
                 </Spinner>
             </div>
             }
+            {props.children}
         </div>
     );
 }
