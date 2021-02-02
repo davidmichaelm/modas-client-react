@@ -15,8 +15,8 @@ function PageHeader(props) {
     }
 
     return (
-        <header className="d-flex p-2 align-items-center">
-            <h2 className="ml-1 mb-0">
+        <header className="d-flex p-2 px-xl-0 align-items-center container-xl p-0">
+            <h2 className="ml-1 ml-lg-0 mb-0">
                 Modas
             </h2>
             <div className="ml-auto mb-0 mr-1 h4" style={{cursor: "pointer"}}>

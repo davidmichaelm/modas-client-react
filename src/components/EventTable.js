@@ -9,8 +9,8 @@ function EventTable(props) {
     }
 
     return (
-        <div className="overflow-auto w-100" id="event-table">
-            <Table striped variant="dark">
+        <div className="overflow-auto container-xl p-0" id="event-table">
+            <Table striped variant="dark" className="w-lg-50">
                 <thead className="bg-primary sticky-top">
                 <tr>
                     <th>Flag</th>
