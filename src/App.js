@@ -23,13 +23,13 @@ class App extends React.Component {
     render() {
         return (
             <div className="App text-white">
-                <PageHeader onItemsPerPageChange={this.handleItemsPerPageChange}/>
-                <EventTable events={this.state.events} onFlagChange={this.handleFlagChange}><Toasts toasts={this.state.toasts}/></EventTable>
+                <PageHeader onItemsPerPageChange={this.handleItemsPerPageChange} />
+                <EventTable events={this.state.events} onFlagChange={this.handleFlagChange} />
                 <PageControls
                     pagingInfo={this.state.pagingInfo}
                     onPageChange={this.setPageData}
                 />
-
+                <Toasts toasts={this.state.toasts} onToastClose={this.removeToast.bind(this)}/>
             </div>
         );
     }
@@ -106,7 +106,6 @@ class App extends React.Component {
         this.setState({
             toasts: newToasts
         });
-        setTimeout(this.removeToast.bind(this, id), 2000);
     }
 
     removeToast(id) {

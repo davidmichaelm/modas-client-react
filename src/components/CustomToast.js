@@ -4,12 +4,17 @@ import React, {useState} from "react";
 function CustomToast(props) {
     const [show, setShow] = useState(true);
 
+    function handleClose() {
+        setShow(false);
+        props.onClose(props.id);
+    }
+
     return (
         <Toast
             key={props.id}
             delay={1500}
             autohide
-            onClose={() => setShow(false)}
+            onClose={handleClose}
             show={show}
             className="text-dark"
             style={{minWidth: "300px"}}
