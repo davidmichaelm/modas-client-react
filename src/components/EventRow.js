@@ -15,7 +15,7 @@ function EventRow(props) {
     return (
         <tr>
             <td><i  style={{cursor: "pointer"}} className={flagClass} onClick={handleFlagClick}></i></td>
-            <td className="d-none d-md-inline">{date}</td>
+            <td className="d-none d-md-block">{date}</td>
             <td className="d-md-none">{shortDate}</td>
             <td>{time}</td>
             <td>{location}</td>
