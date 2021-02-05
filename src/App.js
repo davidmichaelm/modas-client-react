@@ -5,6 +5,7 @@ import PageControls from "./components/PageControls";
 import React from "react";
 import PageHeader from "./components/PageHeader";
 import Toasts from "./components/Toasts";
+import soundFile from "./assets/toast.wav";
 
 class App extends React.Component {
     constructor(props) {
@@ -12,18 +13,25 @@ class App extends React.Component {
         this.setPageData = this.setPageData.bind(this);
         this.handleItemsPerPageChange = this.handleItemsPerPageChange.bind(this);
         this.handleFlagChange = this.handleFlagChange.bind(this);
+        this.handleAutoRefreshChange = this.handleAutoRefreshChange.bind(this);
         this.state = {
             events: [],
             pagingInfo: {},
             itemsPerPage: 20,
-            toasts: []
+            toasts: [],
+            autoRefresh: false,
+            refreshInterval: {},
+            sound: new Audio(soundFile)
         };
     }
 
     render() {
         return (
             <div className="App text-white">
-                <PageHeader onItemsPerPageChange={this.handleItemsPerPageChange} />
+                <PageHeader
+                    onItemsPerPageChange={this.handleItemsPerPageChange}
+                    onAutoRefreshChange={this.handleAutoRefreshChange}
+                />
                 <EventTable events={this.state.events} onFlagChange={this.handleFlagChange} />
                 <PageControls
                     pagingInfo={this.state.pagingInfo}
@@ -45,9 +53,10 @@ class App extends React.Component {
         })
     }
 
-    setPageData(page) {
+    setPageData(page, override = false) {
         if (parseInt(page) === this.state.pagingInfo.currentPage
-            && this.state.itemsPerPage === this.state.pagingInfo.itemsPerPage)
+            && this.state.itemsPerPage === this.state.pagingInfo.itemsPerPage
+            && override === false)
             return;
 
         this.fetchEvents(this.state.itemsPerPage, page)
@@ -64,6 +73,34 @@ class App extends React.Component {
         this.setState({
             itemsPerPage: itemsNum
         }, () => this.setPageData(1));
+    }
+
+    handleAutoRefreshChange(value) {
+        if (value) {
+            this.initAutoRefresh();
+        } else {
+            clearInterval(this.state.refreshInterval);
+        }
+    }
+
+    initAutoRefresh() {
+        this.setState({
+            refreshInterval: setInterval(this.refreshEvents.bind(this), 2000)
+        });
+    }
+
+    refreshEvents() {
+        console.log("refreshing...");
+        fetch("https://dmarquardt-modas.azurewebsites.net/api/event/count")
+            .then(r => r.json())
+            .then(count => {
+                if (count !== this.state.pagingInfo.totalItems) {
+                    this.setPageData(this.state.pagingInfo.currentPage, true);
+                    this.addToast("Motion Detected", "New motion alert detected!");
+                    this.state.sound.play();
+                }
+            })
+            .catch(e => console.log(e));
     }
 
     handleFlagChange(flagged, id) {
