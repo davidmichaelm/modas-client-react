@@ -6,6 +6,7 @@ import React from "react";
 import PageHeader from "./components/PageHeader";
 import Toasts from "./components/Toasts";
 import soundFile from "./assets/toast.wav";
+import Settings from "./components/Settings";
 
 class App extends React.Component {
     constructor(props) {
@@ -28,10 +29,12 @@ class App extends React.Component {
     render() {
         return (
             <div className="App text-white">
-                <PageHeader
-                    onItemsPerPageChange={this.handleItemsPerPageChange}
-                    onAutoRefreshChange={this.handleAutoRefreshChange}
-                />
+                <PageHeader>
+                    <Settings
+                        onItemsPerPageChange={this.handleItemsPerPageChange}
+                        onAutoRefreshChange={this.handleAutoRefreshChange}
+                    />
+                </PageHeader>
                 <EventTable events={this.state.events} onFlagChange={this.handleFlagChange} />
                 <PageControls
                     pagingInfo={this.state.pagingInfo}
