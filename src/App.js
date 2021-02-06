@@ -7,6 +7,7 @@ import PageHeader from "./components/PageHeader";
 import Toasts from "./components/Toasts";
 import soundFile from "./assets/toast.wav";
 import Settings from "./components/Settings";
+import useInterval from "./hooks/useInterval";
 
 function App() {
     const [events, setEvents] = useState([]);
@@ -15,8 +16,22 @@ function App() {
     const [currentPage, setCurrentPage] = useState(1);
     const [serverCount, setServerCount] = useState(0);
     const [toasts, setToasts] = useState([]);
-    const [refreshInterval, setRefreshInterval] = useState(0);
+    const [autoRefresh, setAutoRefresh] = useState(false);
     const sound = new Audio(soundFile);
+
+    useInterval(() => {
+        console.log("refreshing...");
+        fetch("https://dmarquardt-modas.azurewebsites.net/api/event/count")
+            .then(r => r.json())
+            .then(count => {
+                if (count !== pagingInfo.totalItems) {
+                    setServerCount(count);
+                    addToast("Motion Detected", "New motion alert detected!");
+                    sound.play();
+                }
+            })
+            .catch(e => console.log(e));
+    }, autoRefresh ? 2000 : null);
 
     useEffect(() => {
         async function fetchEvents() {
@@ -24,40 +39,13 @@ function App() {
             const json = await response.json();
             setEvents(json.events);
             setPagingInfo(json.pagingInfo);
-            setServerCount(json.pagingInfo.totalItems);
         }
 
         fetchEvents();
-    }, [currentPage, itemsPerPage]);
+    }, [currentPage, itemsPerPage, serverCount]);
 
     const handleItemsPerPageChange = (itemsNum) => {
         setItemsPerPage(itemsNum);
-    };
-
-    const handleAutoRefreshChange = (value) => {
-        if (value) {
-            initAutoRefresh();
-        } else {
-            clearInterval(refreshInterval);
-        }
-    };
-
-    const initAutoRefresh = () => {
-        setRefreshInterval(setInterval(refreshEvents, 2000));
-    };
-
-    const refreshEvents = () => {
-        console.log("refreshing...");
-        fetch("https://dmarquardt-modas.azurewebsites.net/api/event/count")
-            .then(r => r.json())
-            .then(count => {
-                if (count !== pagingInfo.totalItems) {
-                    // setPageData(pagingInfo.currentPage, true); TODO: fix
-                    addToast("Motion Detected", "New motion alert detected!");
-                    sound.play();
-                }
-            })
-            .catch(e => console.log(e));
     };
 
     const handleFlagChange = (flagged, id) => {
@@ -109,7 +97,7 @@ function App() {
             <PageHeader>
                 <Settings
                     onItemsPerPageChange={handleItemsPerPageChange}
-                    onAutoRefreshChange={handleAutoRefreshChange}
+                    onAutoRefreshChange={(value) => setAutoRefresh(value)}
                 />
             </PageHeader>
             <EventTable events={events} onFlagChange={handleFlagChange}/>
