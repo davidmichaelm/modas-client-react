@@ -2,112 +2,66 @@ import './App.css';
 import "bootstrap-icons/font/bootstrap-icons.css";
 import EventTable from "./components/EventTable";
 import PageControls from "./components/PageControls";
-import React from "react";
+import React, {useState, useEffect} from "react";
 import PageHeader from "./components/PageHeader";
 import Toasts from "./components/Toasts";
 import soundFile from "./assets/toast.wav";
 import Settings from "./components/Settings";
 
-class App extends React.Component {
-    constructor(props) {
-        super(props);
-        this.setPageData = this.setPageData.bind(this);
-        this.handleItemsPerPageChange = this.handleItemsPerPageChange.bind(this);
-        this.handleFlagChange = this.handleFlagChange.bind(this);
-        this.handleAutoRefreshChange = this.handleAutoRefreshChange.bind(this);
-        this.state = {
-            events: [],
-            pagingInfo: {},
-            itemsPerPage: 20,
-            toasts: [],
-            autoRefresh: false,
-            refreshInterval: {},
-            sound: new Audio(soundFile)
-        };
-    }
+function App() {
+    const [events, setEvents] = useState([]);
+    const [pagingInfo, setPagingInfo] = useState({});
+    const [itemsPerPage, setItemsPerPage] = useState(20);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [serverCount, setServerCount] = useState(0);
+    const [toasts, setToasts] = useState([]);
+    const [refreshInterval, setRefreshInterval] = useState(0);
+    const sound = new Audio(soundFile);
 
-    render() {
-        return (
-            <div className="App text-white">
-                <PageHeader>
-                    <Settings
-                        onItemsPerPageChange={this.handleItemsPerPageChange}
-                        onAutoRefreshChange={this.handleAutoRefreshChange}
-                    />
-                </PageHeader>
-                <EventTable events={this.state.events} onFlagChange={this.handleFlagChange} />
-                <PageControls
-                    pagingInfo={this.state.pagingInfo}
-                    onPageChange={this.setPageData}
-                />
-                <Toasts toasts={this.state.toasts} onToastClose={this.removeToast.bind(this)}/>
-            </div>
-        );
-    }
-
-    fetchEvents(numEvents, page) {
-        return new Promise((resolve, reject) => {
-            fetch(`https://dmarquardt-modas.azurewebsites.net/api/event/pageSize/${numEvents}/page/${page}`)
-                .then(r => r.json())
-                .then(data => {
-                    resolve(data);
-                })
-                .catch(error => reject(error));
-        })
-    }
-
-    setPageData(page, override = false) {
-        if (parseInt(page) === this.state.pagingInfo.currentPage
-            && this.state.itemsPerPage === this.state.pagingInfo.itemsPerPage
-            && override === false)
-            return;
-
-        this.fetchEvents(this.state.itemsPerPage, page)
-            .then(data => {
-                this.setState({
-                    events: data.events,
-                    pagingInfo: data.pagingInfo
-                });
-            })
-            .catch(error => console.log(error));
-    }
-
-    handleItemsPerPageChange(itemsNum) {
-        this.setState({
-            itemsPerPage: itemsNum
-        }, () => this.setPageData(1));
-    }
-
-    handleAutoRefreshChange(value) {
-        if (value) {
-            this.initAutoRefresh();
-        } else {
-            clearInterval(this.state.refreshInterval);
+    useEffect(() => {
+        async function fetchEvents() {
+            const response = await fetch(`https://dmarquardt-modas.azurewebsites.net/api/event/pageSize/${itemsPerPage}/page/${currentPage}`);
+            const json = await response.json();
+            setEvents(json.events);
+            setPagingInfo(json.pagingInfo);
+            setServerCount(json.pagingInfo.totalItems);
         }
-    }
 
-    initAutoRefresh() {
-        this.setState({
-            refreshInterval: setInterval(this.refreshEvents.bind(this), 2000)
-        });
-    }
+        fetchEvents();
+    }, [currentPage, itemsPerPage]);
 
-    refreshEvents() {
+    const handleItemsPerPageChange = (itemsNum) => {
+        setItemsPerPage(itemsNum);
+    };
+
+    const handleAutoRefreshChange = (value) => {
+        if (value) {
+            initAutoRefresh();
+        } else {
+            clearInterval(refreshInterval);
+        }
+    };
+
+    const initAutoRefresh = () => {
+        setRefreshInterval(setInterval(refreshEvents, 2000));
+    };
+
+    const refreshEvents = () => {
         console.log("refreshing...");
         fetch("https://dmarquardt-modas.azurewebsites.net/api/event/count")
             .then(r => r.json())
             .then(count => {
-                if (count !== this.state.pagingInfo.totalItems) {
-                    this.setPageData(this.state.pagingInfo.currentPage, true);
-                    this.addToast("Motion Detected", "New motion alert detected!");
-                    this.state.sound.play();
+                if (count !== pagingInfo.totalItems) {
+                    // setPageData(pagingInfo.currentPage, true); TODO: fix
+                    addToast("Motion Detected", "New motion alert detected!");
+                    sound.play();
                 }
             })
             .catch(e => console.log(e));
-    }
+    };
 
-    handleFlagChange(flagged, id) {
-        this.updateEventFlag(flagged, id);
+    const handleFlagChange = (flagged, id) => {
+        updateEventFlag(flagged, id);
         const url = `https://dmarquardt-modas.azurewebsites.net/api/event/${id}`;
         fetch(url,
             {
@@ -122,43 +76,50 @@ class App extends React.Component {
                     "value": flagged
                 }])
             })
-            .then(() => this.addToast("Update Complete", `Event flag ${flagged ? "added" : "removed"}.`))
+            .then(() => addToast("Update Complete", `Event flag ${flagged ? "added" : "removed"}.`))
             .catch(e => console.log(e));
-    }
+    };
 
-    updateEventFlag(flagged, id) {
-        const newEvents = [...this.state.events];
+    const updateEventFlag = (flagged, id) => {
+        const newEvents = [...events];
         const eventIndex = newEvents.findIndex(e => e.id === id);
         newEvents[eventIndex].flag = flagged;
-        this.setState({
-            events: newEvents
-        })
-    }
+        setEvents(newEvents);
+    };
 
-    addToast(header, text) {
-        const newToasts = [...this.state.toasts];
+    const addToast = (header, text) => {
+        const newToasts = [...toasts];
         const id = newToasts.length;
         newToasts.push({
             id: id,
             header: header,
             text: text
         });
-        this.setState({
-            toasts: newToasts
-        });
-    }
+        setToasts(newToasts);
+    };
 
-    removeToast(id) {
-        const newToasts = [...this.state.toasts];
+    const removeToast = (id) => {
+        const newToasts = [...toasts];
         newToasts.splice(id);
-        this.setState({
-            toasts: newToasts
-        });
-    }
+        setToasts(newToasts);
+    };
 
-    componentDidMount() {
-        this.setPageData(1);
-    }
+    return (
+        <div className="App text-white">
+            <PageHeader>
+                <Settings
+                    onItemsPerPageChange={handleItemsPerPageChange}
+                    onAutoRefreshChange={handleAutoRefreshChange}
+                />
+            </PageHeader>
+            <EventTable events={events} onFlagChange={handleFlagChange}/>
+            <PageControls
+                pagingInfo={pagingInfo}
+                onPageChange={setCurrentPage}
+            />
+            <Toasts toasts={toasts} onToastClose={removeToast}/>
+        </div>
+    );
 }
 
 export default App;
