@@ -44,35 +44,12 @@ function App() {
         fetchEvents();
     }, [currentPage, itemsPerPage, serverCount]);
 
-    const handleItemsPerPageChange = (itemsNum) => {
-        setItemsPerPage(itemsNum);
-    };
-
-    const handleFlagChange = (flagged, id) => {
-        updateEventFlag(flagged, id);
-        const url = `https://dmarquardt-modas.azurewebsites.net/api/event/${id}`;
-        fetch(url,
-            {
-                method: "PATCH",
-                headers: {
-                    'content-type': 'application/json'
-                },
-                mode: "cors",
-                body: JSON.stringify([{
-                    "op": "replace",
-                    "path": "Flagged",
-                    "value": flagged
-                }])
-            })
-            .then(() => addToast("Update Complete", `Event flag ${flagged ? "added" : "removed"}.`))
-            .catch(e => console.log(e));
-    };
-
     const updateEventFlag = (flagged, id) => {
         const newEvents = [...events];
         const eventIndex = newEvents.findIndex(e => e.id === id);
         newEvents[eventIndex].flag = flagged;
         setEvents(newEvents);
+        addToast("Update Complete", `Event flag ${flagged ? "added" : "removed"}.`)
     };
 
     const addToast = (header, text) => {
@@ -96,11 +73,11 @@ function App() {
         <div className="App text-white">
             <PageHeader>
                 <Settings
-                    onItemsPerPageChange={handleItemsPerPageChange}
+                    onItemsPerPageChange={(itemsNum) => setItemsPerPage(itemsNum)}
                     onAutoRefreshChange={(value) => setAutoRefresh(value)}
                 />
             </PageHeader>
-            <EventTable events={events} onFlagChange={handleFlagChange}/>
+            <EventTable events={events} onFlagChange={updateEventFlag}/>
             <PageControls
                 pagingInfo={pagingInfo}
                 onPageChange={setCurrentPage}
