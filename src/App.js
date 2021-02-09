@@ -20,6 +20,7 @@ function App() {
     const [toasts, setToasts] = useState([]);
     const [autoRefresh, setAutoRefresh] = useState(false);
     const [loggedIn, setLoggedIn] = useState(false);
+    const [openSignIn, setOpenSignIn] = useState(false);
     const sound = new Audio(soundFile);
 
     useInterval(() => {
@@ -41,6 +42,7 @@ function App() {
             setLoggedIn(true);
         } else {
             setLoggedIn(false);
+            setOpenSignIn(true);
         }
     }, []);
 
@@ -59,6 +61,10 @@ function App() {
 
         if (loggedIn) {
             fetchEvents();
+        } else {
+            Cookies.remove("token");
+            setEvents([]);
+            setOpenSignIn(true);
         }
     }, [currentPage, itemsPerPage, serverCount, loggedIn]);
 
@@ -92,6 +98,10 @@ function App() {
             <PageHeader>
                 <SignIn
                     onLogin={setLoggedIn}
+                    open={openSignIn}
+                    setOpen={setOpenSignIn}
+                    loggedIn={loggedIn}
+                    setLoggedIn={setLoggedIn}
                 />
                 <Settings
                     onItemsPerPageChange={(itemsNum) => setItemsPerPage(itemsNum)}

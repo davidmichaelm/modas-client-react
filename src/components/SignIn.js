@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
@@ -9,6 +9,16 @@ export default function SignIn(props) {
 
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
+
+    const open = props.open;
+    const setOpen = props.setOpen;
+
+    useEffect(() => {
+        if (open) {
+            setOpen(false);
+            setShow(true);
+        }
+    }, [open, setOpen]);
 
     const login = () => {
         fetch("https://dmarquardt-modas.azurewebsites.net/api/token",
@@ -43,12 +53,22 @@ export default function SignIn(props) {
 
     const {inputs, handleInputChange, handleSubmit} = useLogin(login);
 
+    const handleLogout = () => props.setLoggedIn(false);
+
     return (
         <>
             <div className="ml-auto mb-0 mr-2" style={{cursor: "pointer"}}>
-                <button className="link-button text-white" onClick={handleShow}>
-                    <i className="bi bi-box-arrow-in-right"></i> Sign In
+                {!props.loggedIn &&
+                    <button className="link-button text-white" onClick={handleShow}>
+                        <i className="bi bi-box-arrow-in-right"></i> Sign In
+                    </button>
+                }
+                {props.loggedIn &&
+                <button className="link-button text-white" onClick={handleLogout}>
+                    <i className="bi bi-box-arrow-right"></i> Sign Out
                 </button>
+                }
+
             </div>
 
             <Modal
