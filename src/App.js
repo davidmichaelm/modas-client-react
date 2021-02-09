@@ -19,6 +19,7 @@ function App() {
     const [serverCount, setServerCount] = useState(0);
     const [toasts, setToasts] = useState([]);
     const [autoRefresh, setAutoRefresh] = useState(false);
+    const [loggedIn, setLoggedIn] = useState(false);
     const sound = new Audio(soundFile);
 
     useInterval(() => {
@@ -36,15 +37,30 @@ function App() {
     }, autoRefresh ? 2000 : null);
 
     useEffect(() => {
+        if (Cookies.get("token")) {
+            setLoggedIn(true);
+        } else {
+            setLoggedIn(false);
+        }
+    }, []);
+
+    useEffect(() => {
         async function fetchEvents() {
-            const response = await fetch(`https://dmarquardt-modas.azurewebsites.net/api/event/pageSize/${itemsPerPage}/page/${currentPage}`);
+            const response = await fetch(`https://dmarquardt-modas.azurewebsites.net/api/event/pageSize/${itemsPerPage}/page/${currentPage}`,
+                {
+                    headers: {
+                        "Authorization": "Bearer " + Cookies.get("token")
+                    }
+                });
             const json = await response.json();
             setEvents(json.events);
             setPagingInfo(json.pagingInfo);
         }
 
-        fetchEvents();
-    }, [currentPage, itemsPerPage, serverCount]);
+        if (loggedIn) {
+            fetchEvents();
+        }
+    }, [currentPage, itemsPerPage, serverCount, loggedIn]);
 
     const updateEventFlag = (flagged, id) => {
         const newEvents = [...events];
@@ -71,16 +87,11 @@ function App() {
         setToasts(newToasts);
     };
 
-    const verifyToken = () => {
-        const token = Cookies.get("token");
-        console.log(token);
-    }
-
     return (
         <div className="App text-white">
             <PageHeader>
                 <SignIn
-                    onSignInChange={verifyToken}
+                    onLogin={setLoggedIn}
                 />
                 <Settings
                     onItemsPerPageChange={(itemsNum) => setItemsPerPage(itemsNum)}

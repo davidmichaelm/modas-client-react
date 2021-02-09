@@ -24,6 +24,9 @@ export default function SignIn(props) {
             })
             .then(r => {
                 if (!r.ok) {
+                    if (r.status === 401) {
+                        console.log("token expired");
+                    }
                     throw new Error("Login not successful");
                 }
                 return r.json();
@@ -31,7 +34,7 @@ export default function SignIn(props) {
             .then((data) => {
                 Cookies.set("token", data.token, { expires: 7});
                 setShow(false);
-                props.onSignInChange();
+                props.onLogin(true);
             })
             .catch(e => {
                 console.log(e)
