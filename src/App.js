@@ -9,6 +9,7 @@ import soundFile from "./assets/toast.wav";
 import Settings from "./components/Settings";
 import SignIn from "./components/SignIn";
 import useInterval from "./hooks/useInterval";
+import Cookies from "js-cookie";
 
 function App() {
     const [events, setEvents] = useState([]);
@@ -70,10 +71,17 @@ function App() {
         setToasts(newToasts);
     };
 
+    const verifyToken = () => {
+        const token = Cookies.get("token");
+        console.log(token);
+    }
+
     return (
         <div className="App text-white">
             <PageHeader>
-                <SignIn />
+                <SignIn
+                    onSignInChange={verifyToken}
+                />
                 <Settings
                     onItemsPerPageChange={(itemsNum) => setItemsPerPage(itemsNum)}
                     onAutoRefreshChange={(value) => setAutoRefresh(value)}

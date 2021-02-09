@@ -2,6 +2,7 @@ import React, {useState} from "react";
 import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
+import Cookies from "js-cookie";
 
 export default function SignIn(props) {
     const [show, setShow] = useState(false);
@@ -28,8 +29,9 @@ export default function SignIn(props) {
                 return r.json();
             })
             .then((data) => {
-                console.log(data);
+                Cookies.set("token", data.token, { expires: 7});
                 setShow(false);
+                props.onSignInChange();
             })
             .catch(e => {
                 console.log(e)
