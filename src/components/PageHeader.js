@@ -8,11 +8,6 @@ function PageHeader(props) {
                 <span className="d-inline d-md-none">MODAS</span>
             </h2>
 
-            <div className="ml-auto mb-0 mr-2" style={{cursor: "pointer"}}>
-                <button className="link-button text-white">
-                    <i className="bi bi-box-arrow-in-right"></i> Sign In
-                </button>
-            </div>
             {props.children}
         </header>
     );

@@ -7,6 +7,7 @@ import PageHeader from "./components/PageHeader";
 import Toasts from "./components/Toasts";
 import soundFile from "./assets/toast.wav";
 import Settings from "./components/Settings";
+import SignIn from "./components/SignIn";
 import useInterval from "./hooks/useInterval";
 
 function App() {
@@ -72,6 +73,7 @@ function App() {
     return (
         <div className="App text-white">
             <PageHeader>
+                <SignIn />
                 <Settings
                     onItemsPerPageChange={(itemsNum) => setItemsPerPage(itemsNum)}
                     onAutoRefreshChange={(value) => setAutoRefresh(value)}
