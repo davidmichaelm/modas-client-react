@@ -19,7 +19,7 @@ function Settings(props) {
 
     return (
         <>
-            <div className="ml-auto mb-0 mr-1 h4" style={{cursor: "pointer"}}>
+            <div className="mb-0 mx-1 h4" style={{cursor: "pointer"}}>
                 <i className="bi bi-gear-fill text-white" onClick={handleShow}></i>
             </div>
             <Modal
