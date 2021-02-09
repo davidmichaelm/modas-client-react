@@ -42,7 +42,7 @@ export default function SignIn(props) {
                 return r.json();
             })
             .then((data) => {
-                Cookies.set("token", data.token, { expires: 7});
+                Cookies.set("token", data.token, {expires: 7});
                 setShow(false);
                 props.onLogin(true);
             })
@@ -51,7 +51,8 @@ export default function SignIn(props) {
             })
     };
 
-    const {inputs, handleInputChange, handleSubmit} = useLogin(login);
+    const {inputs, validated, handleInputChange, handleSubmit} = useLogin(login);
+
 
     const handleLogout = () => props.setLoggedIn(false);
 
@@ -59,9 +60,9 @@ export default function SignIn(props) {
         <>
             <div className="ml-auto mb-0 mr-2" style={{cursor: "pointer"}}>
                 {!props.loggedIn &&
-                    <button className="link-button text-white" onClick={handleShow}>
-                        <i className="bi bi-box-arrow-in-right"></i> Sign In
-                    </button>
+                <button className="link-button text-white" onClick={handleShow}>
+                    <i className="bi bi-box-arrow-in-right"></i> Sign In
+                </button>
                 }
                 {props.loggedIn &&
                 <button className="link-button text-white" onClick={handleLogout}>
@@ -76,9 +77,9 @@ export default function SignIn(props) {
                 onHide={handleClose}
             >
                 <Modal.Header closeButton>
-                    <Modal.Title>Settings</Modal.Title>
+                    <Modal.Title>Sign In</Modal.Title>
                 </Modal.Header>
-                <Form onSubmit={handleSubmit}>
+                <Form onSubmit={handleSubmit} noValidate validated={validated}>
                     <Modal.Body>
                         <Form.Group>
                             <Form.Label className="pr-2">Username</Form.Label>
@@ -88,7 +89,11 @@ export default function SignIn(props) {
                                 type="text"
                                 value={inputs.username}
                                 name="username"
+                                required
                             />
+                            <Form.Control.Feedback type="invalid">
+                                Please enter a username.
+                            </Form.Control.Feedback>
                         </Form.Group>
 
                         <Form.Group>
@@ -99,7 +104,11 @@ export default function SignIn(props) {
                                 type="password"
                                 value={inputs.password}
                                 name="password"
+                                required
                             />
+                            <Form.Control.Feedback type="invalid">
+                                Please enter a password.
+                            </Form.Control.Feedback>
                         </Form.Group>
                     </Modal.Body>
                     <Modal.Footer>
@@ -115,13 +124,20 @@ export default function SignIn(props) {
 
 const useLogin = (callback) => {
     const [inputs, setInputs] = useState({});
+    const [validated, setValidated] = useState(false);
 
     const handleSubmit = (event) => {
         if (event) {
             event.preventDefault();
         }
-        console.log(inputs);
-        callback();
+
+        const form = event.currentTarget;
+        if (form.checkValidity() === false) {
+            event.stopPropagation();
+        } else {
+            callback();
+        }
+        setValidated(true);
     }
 
     const handleInputChange = (event) => {
@@ -132,6 +148,7 @@ const useLogin = (callback) => {
     return {
         handleSubmit,
         handleInputChange,
-        inputs
+        inputs,
+        validated
     };
 }
