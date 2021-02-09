@@ -9,6 +9,34 @@ export default function SignIn(props) {
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
 
+    const login = () => {
+        fetch("https://dmarquardt-modas.azurewebsites.net/api/token",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    "username": inputs.username,
+                    "password": inputs.password
+                })
+            })
+            .then(r => {
+                if (!r.ok) {
+                    throw new Error("Login not successful");
+                }
+                return r.json();
+            })
+            .then((data) => {
+                console.log(data);
+                setShow(false);
+            })
+            .catch(e => {
+                console.log(e)
+            })
+    };
+
+    const {inputs, handleInputChange, handleSubmit} = useLogin(login);
 
     return (
         <>
@@ -25,28 +53,60 @@ export default function SignIn(props) {
                 <Modal.Header closeButton>
                     <Modal.Title>Settings</Modal.Title>
                 </Modal.Header>
-                <Modal.Body>
-                    <Form.Group>
-                        <Form.Label className="pr-2">Username</Form.Label>
-                        <Form.Control
-                            placeholder={"Username"}
-                        />
-                    </Form.Group>
+                <Form onSubmit={handleSubmit}>
+                    <Modal.Body>
+                        <Form.Group>
+                            <Form.Label className="pr-2">Username</Form.Label>
+                            <Form.Control
+                                placeholder={"Username"}
+                                onChange={handleInputChange}
+                                type="text"
+                                value={inputs.username}
+                                name="username"
+                            />
+                        </Form.Group>
 
-                    <Form.Group>
-                        <Form.Label className="pr-2">Password</Form.Label>
-                        <Form.Control
-                            placeholder={"Password"}
-                        />
-                    </Form.Group>
-                </Modal.Body>
-                <Modal.Footer>
-                    <Button variant="primary" onClick={handleClose}>
-                        Close
-                    </Button>
-                </Modal.Footer>
+                        <Form.Group>
+                            <Form.Label className="pr-2">Password</Form.Label>
+                            <Form.Control
+                                placeholder={"Password"}
+                                onChange={handleInputChange}
+                                type="password"
+                                value={inputs.password}
+                                name="password"
+                            />
+                        </Form.Group>
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button type="submit" variant="primary">
+                            Submit
+                        </Button>
+                    </Modal.Footer>
+                </Form>
             </Modal>
         </>
-
     )
+}
+
+const useLogin = (callback) => {
+    const [inputs, setInputs] = useState({});
+
+    const handleSubmit = (event) => {
+        if (event) {
+            event.preventDefault();
+        }
+        console.log(inputs);
+        callback();
+    }
+
+    const handleInputChange = (event) => {
+        event.persist();
+        setInputs(inputs => ({...inputs, [event.target.name]: event.target.value}));
+    }
+
+    return {
+        handleSubmit,
+        handleInputChange,
+        inputs
+    };
 }
