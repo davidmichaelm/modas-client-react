@@ -34,17 +34,17 @@ html, body, #root {
 }
 
 #alert-box {
-    position:fixed;
-    top:60px;
-    right:20px;
-    min-height:200px;
+    position: fixed;
+    top: 60px;
+    right: 20px;
+    min-height: 200px;
     z-index: 10000;
 }
 
 #toast-container {
-    position:absolute;
-    top:0;
-    right:0;
+    position: absolute;
+    top: 0;
+    right: 0;
 }
 
 @media (min-width: 1800px) {

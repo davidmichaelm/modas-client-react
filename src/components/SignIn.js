@@ -3,6 +3,7 @@ import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import Cookies from "js-cookie";
+import "animate.css";
 
 export default function SignIn(props) {
     const [show, setShow] = useState(false);
@@ -13,6 +14,14 @@ export default function SignIn(props) {
     const open = props.open;
     const setOpen = props.setOpen;
 
+    const [shake, setShake] = useState(false);
+    const shakeModal = () => {
+        setShake(true);
+        setTimeout(() => setShake(false), 700);
+    };
+
+    const [loginFailed, setLoginFailed] = useState(false);
+
     useEffect(() => {
         if (open) {
             setOpen(false);
@@ -21,6 +30,7 @@ export default function SignIn(props) {
     }, [open, setOpen]);
 
     const login = () => {
+        setLoginFailed(false);
         fetch("https://dmarquardt-modas.azurewebsites.net/api/token",
             {
                 method: "POST",
@@ -34,10 +44,9 @@ export default function SignIn(props) {
             })
             .then(r => {
                 if (!r.ok) {
-                    if (r.status === 401) {
-                        console.log("token expired");
-                    }
-                    throw new Error("Login not successful");
+                    shakeModal();
+                    setValidated(false);
+                    setLoginFailed(true);
                 }
                 return r.json();
             })
@@ -51,8 +60,7 @@ export default function SignIn(props) {
             })
     };
 
-    const {inputs, validated, handleInputChange, handleSubmit} = useLogin(login);
-
+    const {inputs, validated, setValidated, handleInputChange, handleSubmit} = useLogin(login, shakeModal);
 
     const handleLogout = () => props.setLoggedIn(false);
 
@@ -75,19 +83,27 @@ export default function SignIn(props) {
             <Modal
                 show={show}
                 onHide={handleClose}
+                className={shake ? "animate__animated animate__shakeX" : ""}
+                style={{"animationDuration": "0.7s"}}
             >
                 <Modal.Header closeButton>
                     <Modal.Title>Sign In</Modal.Title>
                 </Modal.Header>
                 <Form onSubmit={handleSubmit} noValidate validated={validated}>
                     <Modal.Body>
+                        {loginFailed &&
+                            <div className="text-danger">
+                                Invalid username or password
+                            </div>
+                        }
+
                         <Form.Group>
                             <Form.Label className="pr-2">Username</Form.Label>
                             <Form.Control
                                 placeholder={"Username"}
                                 onChange={handleInputChange}
                                 type="text"
-                                value={inputs.username}
+                                value={inputs.username || ""}
                                 name="username"
                                 required
                             />
@@ -102,7 +118,7 @@ export default function SignIn(props) {
                                 placeholder={"Password"}
                                 onChange={handleInputChange}
                                 type="password"
-                                value={inputs.password}
+                                value={inputs.password || ""}
                                 name="password"
                                 required
                             />
@@ -122,7 +138,7 @@ export default function SignIn(props) {
     )
 }
 
-const useLogin = (callback) => {
+const useLogin = (callback, onError) => {
     const [inputs, setInputs] = useState({});
     const [validated, setValidated] = useState(false);
 
@@ -134,6 +150,7 @@ const useLogin = (callback) => {
         const form = event.currentTarget;
         if (form.checkValidity() === false) {
             event.stopPropagation();
+            onError();
         } else {
             callback();
         }
@@ -149,6 +166,7 @@ const useLogin = (callback) => {
         handleSubmit,
         handleInputChange,
         inputs,
-        validated
+        validated,
+        setValidated
     };
 }
