@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import {DateTime} from "luxon";
+import Cookies from "js-cookie";
 
 export default function EventRow({id, flagged, location, stamp, onFlagChange}) {
     const flagClass = flagged ? "bi-flag-fill" : "bi-flag";
@@ -38,7 +39,8 @@ const useFlagApi = (initialId) => {
             {
                 method: "PATCH",
                 headers: {
-                    'content-type': 'application/json'
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + Cookies.get("token")
                 },
                 mode: "cors",
                 body: JSON.stringify([{
