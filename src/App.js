@@ -105,6 +105,7 @@ function App() {
                 <Settings
                     onItemsPerPageChange={(itemsNum) => setItemsPerPage(itemsNum)}
                     onAutoRefreshChange={(value) => setAutoRefresh(value)}
+                    autoRefresh={autoRefresh}
                 />
             </PageHeader>
             <EventTable events={events} onFlagChange={updateEventFlag}/>

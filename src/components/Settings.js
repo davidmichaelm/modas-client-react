@@ -51,6 +51,7 @@ function Settings(props) {
                             id="auto-refresh"
                             label="Auto refresh"
                             onChange={handleAutoRefreshChange}
+                            checked={props.autoRefresh}
                         />
                     </Form.Group>
                 </Modal.Body>
