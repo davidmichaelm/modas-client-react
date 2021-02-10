@@ -47,20 +47,26 @@ export default function SignIn(props) {
                     shakeModal();
                     setValidated(false);
                     setLoginFailed(true);
+                    throw new Error("Login failed");
                 }
                 return r.json();
             })
             .then((data) => {
-                Cookies.set("token", data.token, {expires: 7});
+                Cookies.set("token", data.token, {expires: 7, secure: true, sameSite: "lax"});
                 setShow(false);
                 props.onLogin(true);
+                setInputs({
+                    "username": "",
+                    "password": ""
+                });
+                setValidated(false);
             })
             .catch(e => {
                 console.log(e)
             })
     };
 
-    const {inputs, validated, setValidated, handleInputChange, handleSubmit} = useLogin(login, shakeModal);
+    const {inputs, validated, setValidated, setInputs, handleInputChange, handleSubmit} = useLogin(login, shakeModal);
 
     const handleLogout = () => props.setLoggedIn(false);
 
@@ -166,6 +172,7 @@ const useLogin = (callback, onError) => {
         handleSubmit,
         handleInputChange,
         inputs,
+        setInputs,
         validated,
         setValidated
     };

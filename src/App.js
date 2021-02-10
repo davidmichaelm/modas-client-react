@@ -19,7 +19,7 @@ function App() {
     const [serverCount, setServerCount] = useState(0);
     const [toasts, setToasts] = useState([]);
     const [autoRefresh, setAutoRefresh] = useState(false);
-    const [loggedIn, setLoggedIn] = useState(false);
+    const [loggedIn, setLoggedIn] = useState(!!Cookies.get("token"));
     const [openSignIn, setOpenSignIn] = useState(false);
     const sound = new Audio(soundFile);
 
@@ -38,15 +38,6 @@ function App() {
     }, autoRefresh ? 2000 : null);
 
     useEffect(() => {
-        if (Cookies.get("token")) {
-            setLoggedIn(true);
-        } else {
-            setLoggedIn(false);
-            setOpenSignIn(true);
-        }
-    }, []);
-
-    useEffect(() => {
         async function fetchEvents() {
             const response = await fetch(`https://dmarquardt-modas.azurewebsites.net/api/event/pageSize/${itemsPerPage}/page/${currentPage}`,
                 {
@@ -54,6 +45,14 @@ function App() {
                         "Authorization": "Bearer " + Cookies.get("token")
                     }
                 });
+
+            if (!response.ok) {
+                if (response.status === 401) {
+                    setLoggedIn(false);
+                    setOpenSignIn(true);
+                    return;
+                }
+            }
             const json = await response.json();
             setEvents(json.events);
             setPagingInfo(json.pagingInfo);
