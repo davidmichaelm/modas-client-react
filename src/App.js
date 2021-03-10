@@ -22,6 +22,7 @@ function App() {
     const [loggedIn, setLoggedIn] = useState(!!Cookies.get("token"));
     const [openSignIn, setOpenSignIn] = useState(false);
     const [sortBy, setSortBy] = useState("stamp");
+    const [order, setOrder] = useState("desc");
     const sound = new Audio(soundFile);
 
     useInterval(() => {
@@ -40,8 +41,7 @@ function App() {
 
     useEffect(() => {
         async function fetchEvents() {
-            const sortByString = sortBy === "" ? "" : `?sortBy=${sortBy}`;
-            const response = await fetch(`https://dmarquardt-modas.azurewebsites.net/api/event/pageSize/${itemsPerPage}/page/${currentPage}${sortByString}`,
+            const response = await fetch(`https://dmarquardt-modas.azurewebsites.net/api/event/pageSize/${itemsPerPage}/page/${currentPage}?sortBy=${sortBy}&order=${order}`,
                 {
                     headers: {
                         "Authorization": "Bearer " + Cookies.get("token")
@@ -67,7 +67,7 @@ function App() {
             setEvents([]);
             setOpenSignIn(true);
         }
-    }, [currentPage, itemsPerPage, serverCount, loggedIn, sortBy]);
+    }, [currentPage, itemsPerPage, serverCount, loggedIn, sortBy, order]);
 
     const updateEventFlag = (flagged, id) => {
         const newEvents = [...events];
@@ -110,7 +110,7 @@ function App() {
                     autoRefresh={autoRefresh}
                 />
             </PageHeader>
-            <EventTable events={events} sortBy={sortBy} order={"desc"} onFlagChange={updateEventFlag} onSortChange={setSortBy}/>
+            <EventTable events={events} sortBy={sortBy} order={order} onFlagChange={updateEventFlag} onSortChange={setSortBy} onOrderChange={setOrder}/>
             <PageControls
                 pagingInfo={pagingInfo}
                 onPageChange={setCurrentPage}

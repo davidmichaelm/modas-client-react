@@ -9,7 +9,13 @@ function EventTable(props) {
     }
 
     function handleSortChange(sortBy) {
-        props.onSortChange(sortBy);
+        if (sortBy === props.sortBy) {
+            props.onOrderChange(props.order === "asc" ? "desc" : "asc");
+        } else {
+            props.onSortChange(sortBy);
+            props.onOrderChange("desc");
+        }
+
     }
 
     const arrow = props.order === "asc" ? "bi bi-caret-up-fill" : "bi bi-caret-down-fill";
