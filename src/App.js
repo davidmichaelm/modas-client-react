@@ -92,6 +92,10 @@ function App() {
         setToasts(newToasts);
     };
 
+    const updateSortBy = (sortBy) => {
+        console.log(sortBy);
+    };
+
     return (
         <div className="App text-white">
             <PageHeader>
@@ -108,7 +112,7 @@ function App() {
                     autoRefresh={autoRefresh}
                 />
             </PageHeader>
-            <EventTable events={events} onFlagChange={updateEventFlag}/>
+            <EventTable events={events} sortBy={"stamp"} order={"desc"} onFlagChange={updateEventFlag} onSortChange={updateSortBy}/>
             <PageControls
                 pagingInfo={pagingInfo}
                 onPageChange={setCurrentPage}

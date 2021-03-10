@@ -8,15 +8,42 @@ function EventTable(props) {
         props.onFlagChange(flagged, id);
     }
 
+    function handleSortChange(sortBy) {
+        props.onSortChange(sortBy);
+    }
+
+    const arrow = props.order === "asc" ? "bi bi-caret-up-fill" : "bi bi-caret-down-fill";
+
     return (
         <div className="overflow-auto container-xl p-0 position-relative" id="event-table">
             <Table striped variant="dark" className="w-lg-50">
                 <thead className="bg-primary sticky-top">
                 <tr>
-                    <th>Flag</th>
-                    <th>Date</th>
+                    <th>
+                        <button className="link-button text-white font-weight-bold" onClick={() => handleSortChange("flag")}>
+                            Flag
+                            { props.sortBy === "flag" &&
+                                <i className={arrow}></i>
+                            }
+                        </button>
+                    </th>
+                    <th>
+                        <button className="link-button text-white font-weight-bold" onClick={() => handleSortChange("stamp")}>
+                            Date
+                            { props.sortBy === "stamp" &&
+                                <i className={arrow}></i>
+                            }
+                        </button>
+                    </th>
                     <th>Time</th>
-                    <th>Location</th>
+                    <th>
+                        <button className="link-button text-white font-weight-bold" onClick={() => handleSortChange("loc")}>
+                            Location
+                            { props.sortBy === "loc" &&
+                                <i className={arrow}></i>
+                            }
+                        </button>
+                    </th>
                 </tr>
                 </thead>
                 <tbody>
