@@ -105,12 +105,18 @@ function App() {
                     setLoggedIn={setLoggedIn}
                 />
                 <Settings
-                    onItemsPerPageChange={(itemsNum) => setItemsPerPage(itemsNum)}
-                    onAutoRefreshChange={(value) => setAutoRefresh(value)}
+                    onItemsPerPageChange={setItemsPerPage}
+                    onAutoRefreshChange={setAutoRefresh}
                     autoRefresh={autoRefresh}
                 />
             </PageHeader>
-            <EventTable events={events} sortBy={sortBy} order={order} onFlagChange={updateEventFlag} onSortChange={setSortBy} onOrderChange={setOrder}/>
+            <EventTable
+                events={events}
+                sortBy={sortBy}
+                order={order}
+                onFlagChange={updateEventFlag}
+                onSortChange={setSortBy}
+                onOrderChange={setOrder}/>
             <PageControls
                 pagingInfo={pagingInfo}
                 onPageChange={setCurrentPage}
