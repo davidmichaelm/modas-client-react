@@ -108,6 +108,7 @@ function App() {
                     onItemsPerPageChange={setItemsPerPage}
                     onAutoRefreshChange={setAutoRefresh}
                     autoRefresh={autoRefresh}
+                    itemsPerPage={itemsPerPage}
                 />
             </PageHeader>
             <EventTable

@@ -36,7 +36,7 @@ function Settings(props) {
                             as="select"
                             className="w-auto"
                             custom
-                            defaultValue={20}
+                            value={props.itemsPerPage}
                             onChange={handleItemsPerPageChange}
                         >
                             <option value="10">10</option>
